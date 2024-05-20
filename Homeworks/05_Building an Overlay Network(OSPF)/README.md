@@ -128,7 +128,6 @@ router ospf 1
    no passive-interface Ethernet1
    no passive-interface Ethernet2
    no passive-interface Ethernet3
-   passive-interface Loopback1
    max-lsa 12000
 
 interface Ethernet1
