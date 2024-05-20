@@ -258,6 +258,18 @@ PING 10.42.201.3 (10.42.201.3) 72(100) bytes of data.
 --- 10.42.201.3 ping statistics ---
 5 packets transmitted, 5 received, 0% packet loss, time 31ms
 rtt min/avg/max/mdev = 3.867/5.574/7.301/1.155 ms, ipg/ewma 7.923/6.430 ms
+
+Spine-1#ping 10.42.200.2
+PING 10.42.200.2 (10.42.200.2) 72(100) bytes of data.
+80 bytes from 10.42.200.2: icmp_seq=1 ttl=63 time=12.6 ms
+80 bytes from 10.42.200.2: icmp_seq=2 ttl=63 time=11.9 ms
+80 bytes from 10.42.200.2: icmp_seq=3 ttl=63 time=7.73 ms
+80 bytes from 10.42.200.2: icmp_seq=4 ttl=63 time=7.69 ms
+80 bytes from 10.42.200.2: icmp_seq=5 ttl=63 time=8.60 ms
+
+--- 10.42.200.2 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 47ms
+rtt min/avg/max/mdev = 7.699/9.735/12.681/2.145 ms, pipe 2, ipg/ewma 11.868/11.092 ms
 ```
 
 - Spine-2
@@ -304,6 +316,18 @@ PING 10.42.201.3 (10.42.201.3) 72(100) bytes of data.
 --- 10.42.201.3 ping statistics ---
 5 packets transmitted, 5 received, 0% packet loss, time 23ms
 rtt min/avg/max/mdev = 3.519/3.815/4.138/0.255 ms, ipg/ewma 5.773/3.745 ms
+
+Spine-2#ping 10.42.200.1
+PING 10.42.200.1 (10.42.200.1) 72(100) bytes of data.
+80 bytes from 10.42.200.1: icmp_seq=1 ttl=63 time=7.81 ms
+80 bytes from 10.42.200.1: icmp_seq=2 ttl=63 time=9.38 ms
+80 bytes from 10.42.200.1: icmp_seq=3 ttl=63 time=7.81 ms
+80 bytes from 10.42.200.1: icmp_seq=4 ttl=63 time=8.28 ms
+80 bytes from 10.42.200.1: icmp_seq=5 ttl=63 time=7.79 ms
+
+--- 10.42.200.1 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 42ms
+rtt min/avg/max/mdev = 7.791/8.217/9.381/0.615 ms, ipg/ewma 10.555/7.996 ms
 ```
 
 #### Проверка bfd
