@@ -280,62 +280,34 @@ router bgp 65500
 - Spine-1
 
 ```
-Spine-1#show ip bgp summary
+Spine-1#sh bgp evpn summary
 BGP summary information for VRF default
 Router identifier 10.42.200.1, local AS number 65500
 Neighbor Status Codes: m - Under maintenance
-  Neighbor         V  AS           MsgRcvd   MsgSent  InQ OutQ  Up/Down State   PfxRcd PfxAcc
-  10.42.202.1      4  65501            873       863    0    0 00:42:49 Estab   1      1
-  10.42.202.3      4  65502            691       691    0    0 00:34:11 Estab   1      1
-  10.42.202.5      4  65503            691       690    0    0 00:34:09 Estab   1      1
-
-Spine-1#sh ip route
-
- C        10.42.200.1/32 is directly connected, Loopback1
- B E      10.42.201.1/32 [20/0] via 10.42.202.1, Ethernet1
- B E      10.42.201.2/32 [20/0] via 10.42.202.3, Ethernet2
- B E      10.42.201.3/32 [20/0] via 10.42.202.5, Ethernet3
- C        10.42.202.0/31 is directly connected, Ethernet1
- C        10.42.202.2/31 is directly connected, Ethernet2
- C        10.42.202.4/31 is directly connected, Ethernet3
+  Neighbor    V AS           MsgRcvd   MsgSent  InQ OutQ  Up/Down State   PfxRcd PfxAcc
+  10.42.201.1 4 65501           3774      3770    0    0 02:39:49 Estab   2      2
+  10.42.201.2 4 65502           3773      3766    0    0 02:39:49 Estab   2      2
+  10.42.201.3 4 65503           3775      3776    0    0 02:39:50 Estab   2      2
 ```
 
 - Spine-2
 
 ```
-Spine-2#show ip bgp summary
+Spine-2#sh bgp evpn summary
 BGP summary information for VRF default
 Router identifier 10.42.200.2, local AS number 65500
 Neighbor Status Codes: m - Under maintenance
-  Neighbor         V  AS           MsgRcvd   MsgSent  InQ OutQ  Up/Down State   PfxRcd PfxAcc
-  10.42.203.1      4  65501            759       764    0    0 00:37:40 Estab   1      1
-  10.42.203.3      4  65502            740       741    0    0 00:36:43 Estab   1      1
-  10.42.203.5      4  65503            729       730    0    0 00:36:10 Estab   1      1
-
-Spine-2#sh ip route
-
- C        10.42.200.2/32 is directly connected, Loopback1
- B E      10.42.201.1/32 [20/0] via 10.42.203.1, Ethernet1
- B E      10.42.201.2/32 [20/0] via 10.42.203.3, Ethernet2
- B E      10.42.201.3/32 [20/0] via 10.42.203.5, Ethernet3
- C        10.42.203.0/31 is directly connected, Ethernet1
- C        10.42.203.2/31 is directly connected, Ethernet2
- C        10.42.203.4/31 is directly connected, Ethernet3
+  Neighbor    V AS           MsgRcvd   MsgSent  InQ OutQ  Up/Down State   PfxRcd PfxAcc
+  10.42.201.1 4 65501           3787      3794    0    0 02:40:59 Estab   2      2
+  10.42.201.2 4 65502           3800      3803    0    0 02:40:59 Estab   2      2
+  10.42.201.3 4 65503           3785      3804    0    0 02:41:00 Estab   2      2
 ```
 
 - Leaf-1
 
 ```
-Leaf-1#show ip bgp summary
-BGP summary information for VRF default
-Router identifier 10.42.201.1, local AS number 65501
-Neighbor Status Codes: m - Under maintenance
-  Neighbor         V  AS           MsgRcvd   MsgSent  InQ OutQ  Up/Down State   PfxRcd PfxAcc
-  10.42.202.0      4  65500           3529      3544    0    0 00:45:16 Estab   3      3
-  10.42.203.0      4  65500           2346      2350    0    0 00:38:49 Estab   3      3
-
 Leaf-1#sh ip route
-
+VRF: default
  B E      10.42.200.1/32 [20/0] via 10.42.202.0, Ethernet1
  B E      10.42.200.2/32 [20/0] via 10.42.203.0, Ethernet2
  C        10.42.201.1/32 is directly connected, Loopback2
@@ -345,91 +317,206 @@ Leaf-1#sh ip route
                                 via 10.42.203.0, Ethernet2
  C        10.42.202.0/31 is directly connected, Ethernet1
  C        10.42.203.0/31 is directly connected, Ethernet2
+ C        10.42.204.1/32 is directly connected, Loopback100
+ B E      10.42.204.2/32 [20/0] via 10.42.202.0, Ethernet1
+                                via 10.42.203.0, Ethernet2
+ B E      10.42.204.3/32 [20/0] via 10.42.202.0, Ethernet1
+                                via 10.42.203.0, Ethernet2
 
-Leaf-1#ping 10.42.201.2 source 10.42.201.1
-PING 10.42.201.2 (10.42.201.2) from 10.42.201.1 : 72(100) bytes of data.
-80 bytes from 10.42.201.2: icmp_seq=1 ttl=63 time=13.5 ms
-80 bytes from 10.42.201.2: icmp_seq=2 ttl=63 time=8.32 ms
-80 bytes from 10.42.201.2: icmp_seq=3 ttl=63 time=8.08 ms
-80 bytes from 10.42.201.2: icmp_seq=4 ttl=63 time=10.3 ms
-80 bytes from 10.42.201.2: icmp_seq=5 ttl=63 time=9.21 ms
+Leaf-1#sh bgp summary
+BGP summary information for VRF default
+Router identifier 10.42.201.1, local AS number 65501
+Neighbor             AS Session State AFI/SAFI                AFI/SAFI State   NLRI Rcd   NLRI Acc
+----------- ----------- ------------- ----------------------- -------------- ---------- ----------
+10.42.200.1       65500 Established   L2VPN EVPN              Negotiated              4          4
+10.42.200.2       65500 Established   L2VPN EVPN              Negotiated              4          4
+10.42.202.0       65500 Established   IPv4 Unicast            Negotiated              5          5
+10.42.203.0       65500 Established   IPv4 Unicast            Negotiated              5
 
---- 10.42.201.2 ping statistics ---
-5 packets transmitted, 5 received, 0% packet loss, time 52ms
-rtt min/avg/max/mdev = 8.081/9.903/13.563/1.995 ms, ipg/ewma 13.153/11.703 ms
+Leaf-1#sh vxlan vtep
+Remote VTEPS for Vxlan1:
+VTEP              Tunnel Type(s)
+----------------- --------------
+10.42.204.2       flood
+10.42.204.3       flood
 
-Leaf-1#ping 10.42.201.3 source 10.42.201.1
-PING 10.42.201.3 (10.42.201.3) from 10.42.201.1 : 72(100) bytes of data.
-80 bytes from 10.42.201.3: icmp_seq=1 ttl=63 time=10.7 ms
-80 bytes from 10.42.201.3: icmp_seq=2 ttl=63 time=8.07 ms
-80 bytes from 10.42.201.3: icmp_seq=3 ttl=63 time=7.87 ms
+Total number of remote VTEPS:  2
 
---- 10.42.201.3 ping statistics ---
-5 packets transmitted, 3 received, 40% packet loss, time 43ms
-rtt min/avg/max/mdev = 7.871/8.898/10.748/1.312 ms, ipg/ewma 10.923/10.096 ms
+Leaf-1#show interface vxlan1
+Vxlan1 is up, line protocol is up (connected)
+  Hardware is Vxlan
+  Source interface is Loopback100 and is active with 10.42.204.1
+  Listening on UDP port 4789
+  Replication/Flood Mode is headend with Flood List Source: EVPN
+  Remote MAC learning via EVPN
+  VNI mapping to VLANs
+  Static VLAN to VNI mapping is
+    [10, 100010]      [20, 100020]
+  Note: All Dynamic VLANs used by VCS are internal VLANs.
+        Use 'show vxlan vni' for details.
+  Static VRF to VNI mapping is not configured
+  Headend replication flood vtep list is:
+    10 10.42.204.2     10.42.204.3
+    20 10.42.204.2     10.42.204.3
+  Shared Router MAC is 0000.0000.0000
+
+Leaf-1#sh vxlan vni
+VNI to VLAN Mapping for Vxlan1
+VNI          VLAN       Source       Interface       802.1Q Tag
+------------ ---------- ------------ --------------- ----------
+100010       10         static       Ethernet8       untagged
+                                     Vxlan1          10
+100020       20         static       Ethernet7       untagged
+                                     Vxlan1          20
+
+VNI to dynamic VLAN Mapping for Vxlan1
+VNI       VLAN       VRF       Source
+--------- ---------- --------- ------------
+
+Leaf-1#show vxlan address-table
+          Vxlan Mac Address Table
+----------------------------------------------------------------------
+
+VLAN  Mac Address     Type      Prt  VTEP             Moves   Last Move
+----  -----------     ----      ---  ----             -----   ---------
+  10  0050.7966.6807  EVPN      Vx1  10.42.204.2      1       0:01:36 ago
+  10  0050.7966.6808  EVPN      Vx1  10.42.204.3      1       0:01:24 ago
+  20  0050.7966.6809  EVPN      Vx1  10.42.204.3      1       0:00:43 ago
+  20  0050.7966.680b  EVPN      Vx1  10.42.204.2      1       0:00:52 ago
+Total Remote Mac Addresses for this criterion: 4
+
+Leaf-1#show bgp evpn route-type mac-ip
+BGP routing table information for VRF default
+Router identifier 10.42.201.1, local AS number 65501
+Route status codes: * - valid, > - active, S - Stale, E - ECMP head, e - ECMP
+                    c - Contributing to ECMP, % - Pending BGP convergence
+Origin codes: i - IGP, e - EGP, ? - incomplete
+AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Link Local Nexthop
+
+          Network                Next Hop              Metric  LocPref Weight  Path
+ * >      RD: 65501:100010 mac-ip 0050.7966.6806
+                                 -                     -       -       0       i
+ * >Ec    RD: 65502:100010 mac-ip 0050.7966.6807
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:100010 mac-ip 0050.7966.6807
+                                 10.42.204.2           -       100     0       65500 65502 i
+ * >Ec    RD: 65503:100010 mac-ip 0050.7966.6808
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:100010 mac-ip 0050.7966.6808
+                                 10.42.204.3           -       100     0       65500 65503 i
+ * >Ec    RD: 65503:100020 mac-ip 0050.7966.6809
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:100020 mac-ip 0050.7966.6809
+                                 10.42.204.3           -       100     0       65500 65503 i
+ * >      RD: 65501:100020 mac-ip 0050.7966.680a
+                                 -                     -       -       0       i
+ * >Ec    RD: 65502:100020 mac-ip 0050.7966.680b
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:100020 mac-ip 0050.7966.680b
+                                 10.42.204.2           -       100     0       65500 65502 i
 ```
 
 - Leaf-2
 
 ```
-Leaf-2#show ip bgp summary
+Leaf-2#sh bgp summary
 BGP summary information for VRF default
 Router identifier 10.42.201.2, local AS number 65502
-Neighbor Status Codes: m - Under maintenance
-  Neighbor         V  AS           MsgRcvd   MsgSent  InQ OutQ  Up/Down State   PfxRcd PfxAcc
-  10.42.202.2      4  65500           2024      2027    0    0 00:38:00 Estab   3      3
-  10.42.203.2      4  65500           2235      2238    0    0 00:39:13 Estab   3      3
+Neighbor             AS Session State AFI/SAFI                AFI/SAFI State   NLRI Rcd   NLRI Acc
+----------- ----------- ------------- ----------------------- -------------- ---------- ----------
+10.42.200.1       65500 Established   L2VPN EVPN              Negotiated              8          8
+10.42.200.2       65500 Established   L2VPN EVPN              Negotiated              8          8
+10.42.202.2       65500 Established   IPv4 Unicast            Negotiated              5          5
+10.42.203.2       65500 Established   IPv4 Unicast            Negotiated              5          5
 
-Leaf-2#sh ip route
+Leaf-2#sh vxlan vtep
+Remote VTEPS for Vxlan1:
 
- B E      10.42.200.1/32 [20/0] via 10.42.202.2, Ethernet1
- B E      10.42.200.2/32 [20/0] via 10.42.203.2, Ethernet2
- B E      10.42.201.1/32 [20/0] via 10.42.202.2, Ethernet1
-                                via 10.42.203.2, Ethernet2
- C        10.42.201.2/32 is directly connected, Loopback2
- B E      10.42.201.3/32 [20/0] via 10.42.202.2, Ethernet1
-                                via 10.42.203.2, Ethernet2
- C        10.42.202.2/31 is directly connected, Ethernet1
- C        10.42.203.2/31 is directly connected, Ethernet2
+VTEP              Tunnel Type(s)
+----------------- --------------
+10.42.204.1       flood, unicast
+10.42.204.3       flood, unicast
 
-Leaf-2#ping 10.42.201.1 source 10.42.201.2
-PING 10.42.201.1 (10.42.201.1) from 10.42.201.2 : 72(100) bytes of data.
-80 bytes from 10.42.201.1: icmp_seq=1 ttl=63 time=21.2 ms
-80 bytes from 10.42.201.1: icmp_seq=2 ttl=63 time=15.6 ms
-80 bytes from 10.42.201.1: icmp_seq=3 ttl=63 time=34.4 ms
-80 bytes from 10.42.201.1: icmp_seq=4 ttl=63 time=17.7 ms
-80 bytes from 10.42.201.1: icmp_seq=5 ttl=63 time=6.94 ms
+Total number of remote VTEPS:  2
 
---- 10.42.201.1 ping statistics ---
-5 packets transmitted, 5 received, 0% packet loss, time 96ms
-rtt min/avg/max/mdev = 6.941/19.223/34.426/8.952 ms, pipe 2, ipg/ewma 24.030/19.893 ms
+Leaf-2#show interface vxlan1
+Vxlan1 is up, line protocol is up (connected)
+  Hardware is Vxlan
+  Source interface is Loopback100 and is active with 10.42.204.2
+  Listening on UDP port 4789
+  Replication/Flood Mode is headend with Flood List Source: EVPN
+  Remote MAC learning via EVPN
+  VNI mapping to VLANs
+  Static VLAN to VNI mapping is
+    [10, 100010]      [20, 100020]
+  Note: All Dynamic VLANs used by VCS are internal VLANs.
+        Use 'show vxlan vni' for details.
+  Static VRF to VNI mapping is not configured
+  Headend replication flood vtep list is:
+    10 10.42.204.3     10.42.204.1
+    20 10.42.204.3     10.42.204.1
+  Shared Router MAC is 0000.0000.0000
 
-Leaf-2#ping 10.42.201.3 source 10.42.201.2
-PING 10.42.201.3 (10.42.201.3) from 10.42.201.2 : 72(100) bytes of data.
-80 bytes from 10.42.201.3: icmp_seq=1 ttl=63 time=13.1 ms
-80 bytes from 10.42.201.3: icmp_seq=2 ttl=63 time=12.0 ms
-80 bytes from 10.42.201.3: icmp_seq=3 ttl=63 time=7.47 ms
-80 bytes from 10.42.201.3: icmp_seq=4 ttl=63 time=8.32 ms
-80 bytes from 10.42.201.3: icmp_seq=5 ttl=63 time=8.34 ms
+Leaf-2#sh vxlan vni
+VNI to VLAN Mapping for Vxlan1
+VNI          VLAN       Source       Interface       802.1Q Tag
+------------ ---------- ------------ --------------- ----------
+100010       10         static       Ethernet8       untagged
+                                     Vxlan1          10
+100020       20         static       Ethernet7       untagged
+                                     Vxlan1          20
 
---- 10.42.201.3 ping statistics ---
-5 packets transmitted, 5 received, 0% packet loss, time 52ms
-rtt min/avg/max/mdev = 7.474/9.872/13.124/2.280 ms, ipg/ewma 13.181/11.374 ms
+VNI to dynamic VLAN Mapping for Vxlan1
+VNI       VLAN       VRF       Source
+--------- ---------- --------- ------------
+
+Leaf-2#show vxlan address-table
+          Vxlan Mac Address Table
+----------------------------------------------------------------------
+
+VLAN  Mac Address     Type      Prt  VTEP             Moves   Last Move
+----  -----------     ----      ---  ----             -----   ---------
+  10  0050.7966.6806  EVPN      Vx1  10.42.204.1      1       0:01:15 ago
+  10  0050.7966.6808  EVPN      Vx1  10.42.204.3      1       0:01:07 ago
+  20  0050.7966.6809  EVPN      Vx1  10.42.204.3      1       0:00:43 ago
+  20  0050.7966.680a  EVPN      Vx1  10.42.204.1      1       0:00:50 ago
+Total Remote Mac Addresses for this criterion: 4
+
+Leaf-2#show bgp evpn route-type mac-ip
+BGP routing table information for VRF default
+Router identifier 10.42.201.2, local AS number 65502
+Route status codes: * - valid, > - active, S - Stale, E - ECMP head, e - ECMP
+                    c - Contributing to ECMP, % - Pending BGP convergence
+Origin codes: i - IGP, e - EGP, ? - incomplete
+AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Link Local Nexthop
+
+          Network                Next Hop              Metric  LocPref Weight  Path
+ * >Ec    RD: 65501:100010 mac-ip 0050.7966.6806
+                                 10.42.204.1           -       100     0       65500 65501 i
+ *  ec    RD: 65501:100010 mac-ip 0050.7966.6806
+                                 10.42.204.1           -       100     0       65500 65501 i
+ * >      RD: 65502:100010 mac-ip 0050.7966.6807
+                                 -                     -       -       0       i
+ * >Ec    RD: 65503:100010 mac-ip 0050.7966.6808
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:100010 mac-ip 0050.7966.6808
+                                 10.42.204.3           -       100     0       65500 65503 i
+ * >Ec    RD: 65503:100020 mac-ip 0050.7966.6809
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:100020 mac-ip 0050.7966.6809
+                                 10.42.204.3           -       100     0       65500 65503 i
+ * >Ec    RD: 65501:100020 mac-ip 0050.7966.680a
+                                 10.42.204.1           -       100     0       65500 65501 i
+ *  ec    RD: 65501:100020 mac-ip 0050.7966.680a
+                                 10.42.204.1           -       100     0       65500 65501 i
+ * >      RD: 65502:100020 mac-ip 0050.7966.680b
+                                 -                     -       -       0       i
 ```
 
 - Leaf-3
 
 ```
-Leaf-3#sh ip bgp summary
-BGP summary information for VRF default
-Router identifier 10.42.201.3, local AS number 65503
-Neighbor Status Codes: m - Under maintenance
-  Neighbor         V  AS           MsgRcvd   MsgSent  InQ OutQ  Up/Down State   PfxRcd PfxAcc
-  10.42.202.4      4  65500           2005      2007    0    0 00:38:47 Estab   3      3
-  10.42.203.4      4  65500           2205      2208    0    0 00:39:29 Estab   3      3
-
 Leaf-3#sh ip route
-
  B E      10.42.200.1/32 [20/0] via 10.42.202.4, Ethernet1
  B E      10.42.200.2/32 [20/0] via 10.42.203.4, Ethernet2
  B E      10.42.201.1/32 [20/0] via 10.42.202.4, Ethernet1
@@ -439,120 +526,103 @@ Leaf-3#sh ip route
  C        10.42.201.3/32 is directly connected, Loopback2
  C        10.42.202.4/31 is directly connected, Ethernet1
  C        10.42.203.4/31 is directly connected, Ethernet2
+ B E      10.42.204.1/32 [20/0] via 10.42.202.4, Ethernet1
+                                via 10.42.203.4, Ethernet2
+ B E      10.42.204.2/32 [20/0] via 10.42.202.4, Ethernet1
+                                via 10.42.203.4, Ethernet2
+ C        10.42.204.3/32 is directly connected, Loopback100
 
-Leaf-3#ping 10.42.201.1 source 10.42.201.3
-PING 10.42.201.1 (10.42.201.1) from 10.42.201.3 : 72(100) bytes of data.
-80 bytes from 10.42.201.1: icmp_seq=1 ttl=63 time=9.88 ms
-80 bytes from 10.42.201.1: icmp_seq=2 ttl=63 time=16.7 ms
-80 bytes from 10.42.201.1: icmp_seq=3 ttl=63 time=12.0 ms
-80 bytes from 10.42.201.1: icmp_seq=4 ttl=63 time=12.1 ms
-80 bytes from 10.42.201.1: icmp_seq=5 ttl=63 time=8.95 ms
+Leaf-3#sh bgp summary
+BGP summary information for VRF default
+Router identifier 10.42.201.3, local AS number 65503
+Neighbor             AS Session State AFI/SAFI                AFI/SAFI State   NLRI Rcd   NLRI Acc
+----------- ----------- ------------- ----------------------- -------------- ---------- ----------
+10.42.200.1       65500 Established   L2VPN EVPN              Negotiated              8          8
+10.42.200.2       65500 Established   L2VPN EVPN              Negotiated              8          8
+10.42.202.4       65500 Established   IPv4 Unicast            Negotiated              5          5
+10.42.203.4       65500 Established   IPv4 Unicast            Negotiated              5          5
 
---- 10.42.201.1 ping statistics ---
-5 packets transmitted, 5 received, 0% packet loss, time 47ms
-rtt min/avg/max/mdev = 8.950/11.969/16.768/2.704 ms, pipe 2, ipg/ewma 11.775/10.806 ms
+Leaf-3#sh vxlan vtep
+Remote VTEPS for Vxlan1:
 
-Leaf-3#ping 10.42.201.2 source 10.42.201.3
-PING 10.42.201.2 (10.42.201.2) from 10.42.201.3 : 72(100) bytes of data.
-80 bytes from 10.42.201.2: icmp_seq=1 ttl=63 time=9.03 ms
-80 bytes from 10.42.201.2: icmp_seq=2 ttl=63 time=8.14 ms
-80 bytes from 10.42.201.2: icmp_seq=3 ttl=63 time=8.63 ms
-80 bytes from 10.42.201.2: icmp_seq=4 ttl=63 time=11.3 ms
-80 bytes from 10.42.201.2: icmp_seq=5 ttl=63 time=12.5 ms
+VTEP              Tunnel Type(s)
+----------------- --------------
+10.42.204.1       flood, unicast
+10.42.204.2       flood, unicast
 
---- 10.42.201.2 ping statistics ---
-5 packets transmitted, 5 received, 0% packet loss, time 42ms
-rtt min/avg/max/mdev = 8.144/9.942/12.580/1.711 ms, pipe 2, ipg/ewma 10.513/9.617 ms
+Total number of remote VTEPS:  2
 
-```
+Leaf-3#show interface vxlan1
+Vxlan1 is up, line protocol is up (connected)
+  Hardware is Vxlan
+  Source interface is Loopback100 and is active with 10.42.204.3
+  Listening on UDP port 4789
+  Replication/Flood Mode is headend with Flood List Source: EVPN
+  Remote MAC learning via EVPN
+  VNI mapping to VLANs
+  Static VLAN to VNI mapping is
+    [110, 100010]     [120, 100020]
+  Note: All Dynamic VLANs used by VCS are internal VLANs.
+        Use 'show vxlan vni' for details.
+  Static VRF to VNI mapping is not configured
+  Headend replication flood vtep list is:
+   110 10.42.204.2     10.42.204.1
+   120 10.42.204.2     10.42.204.1
+  Shared Router MAC is 0000.0000.0000
 
-#### Проверка bfd
+Leaf-3#sh vxlan vni
+VNI to VLAN Mapping for Vxlan1
+VNI          VLAN       Source       Interface       802.1Q Tag
+------------ ---------- ------------ --------------- ----------
+100010       110        static       Ethernet8       untagged
+                                     Vxlan1          110
+100020       120        static       Ethernet7       untagged
+                                     Vxlan1          120
 
-- Spine-1
+VNI to dynamic VLAN Mapping for Vxlan1
+VNI       VLAN       VRF       Source
+--------- ---------- --------- ------------
 
-```
-Spine-1#sh bfd peers
-VRF name: default
------------------
-DstAddr         MyDisc   YourDisc  Interface/Transport    Type          LastUp
------------ ---------- ----------- -------------------- ------- ---------------
-10.42.202.1 3776581285  710359089        Ethernet1(13)  normal  05/29/24 14:14
-10.42.202.3  350334203 1621072084        Ethernet2(14)  normal  05/29/24 14:22
-10.42.202.5 2562599469  522653439        Ethernet3(15)  normal  05/29/24 14:22
+Leaf-3#show vxlan address-table
+          Vxlan Mac Address Table
+----------------------------------------------------------------------
 
-   LastDown            LastDiag    State
--------------- ------------------- -----
-         NA       No Diagnostic       Up
-         NA       No Diagnostic       Up
-         NA       No Diagnostic       Up
-```
+VLAN  Mac Address     Type      Prt  VTEP             Moves   Last Move
+----  -----------     ----      ---  ----             -----   ---------
+ 110  0050.7966.6806  EVPN      Vx1  10.42.204.1      1       0:01:26 ago
+ 110  0050.7966.6807  EVPN      Vx1  10.42.204.2      1       0:01:26 ago
+ 120  0050.7966.680a  EVPN      Vx1  10.42.204.1      1       0:01:00 ago
+ 120  0050.7966.680b  EVPN      Vx1  10.42.204.2      1       0:01:00 ago
+Total Remote Mac Addresses for this criterion: 4
 
-- Spine-2
+Leaf-3#show bgp evpn route-type mac-ip
+BGP routing table information for VRF default
+Router identifier 10.42.201.3, local AS number 65503
+Route status codes: * - valid, > - active, S - Stale, E - ECMP head, e - ECMP
+                    c - Contributing to ECMP, % - Pending BGP convergence
+Origin codes: i - IGP, e - EGP, ? - incomplete
+AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Link Local Nexthop
 
-```
-Spine-2#sh bfd peers
-VRF name: default
------------------
-DstAddr         MyDisc   YourDisc  Interface/Transport    Type          LastUp
------------ ---------- ----------- -------------------- ------- ---------------
-10.42.203.1 2388225729 2651731160        Ethernet1(13)  normal  05/29/24 14:20
-10.42.203.3 2775006766  640327943        Ethernet2(14)  normal  05/29/24 14:21
-10.42.203.5 1999665187  814292712        Ethernet3(15)  normal  05/29/24 14:22
+          Network                Next Hop              Metric  LocPref Weight  Path
+ * >Ec    RD: 65501:100010 mac-ip 0050.7966.6806
+                                 10.42.204.1           -       100     0       65500 65501 i
+ *  ec    RD: 65501:100010 mac-ip 0050.7966.6806
+                                 10.42.204.1           -       100     0       65500 65501 i
+ * >Ec    RD: 65502:100010 mac-ip 0050.7966.6807
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:100010 mac-ip 0050.7966.6807
+                                 10.42.204.2           -       100     0       65500 65502 i
+ * >      RD: 65503:100010 mac-ip 0050.7966.6808
+                                 -                     -       -       0       i
+ * >      RD: 65503:100020 mac-ip 0050.7966.6809
+                                 -                     -       -       0       i
+ * >Ec    RD: 65501:100020 mac-ip 0050.7966.680a
+                                 10.42.204.1           -       100     0       65500 65501 i
+ *  ec    RD: 65501:100020 mac-ip 0050.7966.680a
+                                 10.42.204.1           -       100     0       65500 65501 i
+ * >Ec    RD: 65502:100020 mac-ip 0050.7966.680b
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:100020 mac-ip 0050.7966.680b
+                                 10.42.204.2           -       100     0       65500 65502 i
 
-   LastDown            LastDiag    State
--------------- ------------------- -----
-         NA       No Diagnostic       Up
-         NA       No Diagnostic       Up
-         NA       No Diagnostic       Up
-```
-
-- Leaf-1
-
-```
-Leaf-1#sh bfd peers
-VRF name: default
------------------
-DstAddr         MyDisc   YourDisc  Interface/Transport    Type          LastUp
------------ ---------- ----------- -------------------- ------- ---------------
-10.42.202.0  710359089 3776581285        Ethernet1(13)  normal  05/29/24 14:15
-10.42.203.0 2651731160 2388225729        Ethernet2(14)  normal  05/29/24 14:21
-
-         LastDown            LastDiag    State
--------------------- ------------------- -----
-   05/29/24 14:12       No Diagnostic       Up
-   05/29/24 14:20       No Diagnostic       Up
-```
-
-- Leaf-2
-
-```
-Leaf-2#sh bfd peers
-VRF name: default
------------------
-DstAddr         MyDisc   YourDisc  Interface/Transport    Type          LastUp
------------ ---------- ----------- -------------------- ------- ---------------
-10.42.202.2 1621072084  350334203        Ethernet1(13)  normal  05/29/24 14:22
-10.42.203.2  640327943 2775006766        Ethernet2(14)  normal  05/29/24 14:21
-
-         LastDown            LastDiag    State
--------------------- ------------------- -----
-   05/29/24 14:11       No Diagnostic       Up
-   05/29/24 14:20       No Diagnostic       Up
-```
-
-- Leaf-3
-
-```
-Leaf-3#sh bfd peers
-VRF name: default
------------------
-DstAddr        MyDisc    YourDisc  Interface/Transport    Type          LastUp
------------ ---------- ----------- -------------------- ------- ---------------
-10.42.202.4 522653439  2562599469        Ethernet1(13)  normal  05/29/24 14:22
-10.42.203.4 814292712  1999665187        Ethernet2(14)  normal  05/29/24 14:22
-
-         LastDown            LastDiag    State
--------------------- ------------------- -----
-   05/29/24 14:11       No Diagnostic       Up
-   05/29/24 14:20       No Diagnostic       Up
 ```
