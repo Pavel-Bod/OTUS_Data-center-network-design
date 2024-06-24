@@ -626,3 +626,39 @@ AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Li
                                  10.42.204.2           -       100     0       65500 65502 i
 
 ```
+
+- VPC1
+ ```
+VPC1> ping 192.168.10.21 -c 2
+84 bytes from 192.168.10.21 icmp_seq=1 ttl=64 time=18.215 ms
+84 bytes from 192.168.10.21 icmp_seq=2 ttl=64 time=17.292 ms
+
+VPC1> ping 192.168.10.31 -c 2
+84 bytes from 192.168.10.31 icmp_seq=1 ttl=64 time=23.837 ms
+84 bytes from 192.168.10.31 icmp_seq=2 ttl=64 time=23.066 ms
+ ```
+
+- VPC2
+```
+VPC2> ping 192.168.20.21 -c2 2
+84 bytes from 192.168.20.21 icmp_seq=1 ttl=64 time=17.574 ms
+84 bytes from 192.168.20.21 icmp_seq=2 ttl=64 time=19.145 ms
+
+VPC2> ping 192.168.20.31 -c2 2
+84 bytes from 192.168.20.31 icmp_seq=1 ttl=64 time=39.614 ms
+84 bytes from 192.168.20.31 icmp_seq=2 ttl=64 time=14.236 ms
+```
+
+- VPC5
+```
+VPC5> ping 192.168.10.11 -c 2
+84 bytes from 192.168.10.11 icmp_seq=1 ttl=64 time=21.745 ms
+84 bytes from 192.168.10.11 icmp_seq=2 ttl=64 time=14.087 ms
+```
+
+- VPC6
+```
+VPC6> ping 192.168.20.11 -c 2
+84 bytes from 192.168.20.11 icmp_seq=1 ttl=64 time=18.714 ms
+84 bytes from 192.168.20.11 icmp_seq=2 ttl=64 time=21.566 ms
+```
