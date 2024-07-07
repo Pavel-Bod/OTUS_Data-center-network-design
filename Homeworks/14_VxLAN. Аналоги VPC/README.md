@@ -314,7 +314,24 @@ router bgp 65501
 - [Server1](config/Server1.conf)
 
 ```
-
+vlan 10,20
+!
+interface Port-Channel1
+   switchport mode trunk
+!
+interface Ethernet1
+   channel-group 1 mode active
+!
+interface Ethernet2
+   channel-group 1 mode active
+!
+interface Vlan10
+   ip address 192.168.10.41/24
+!
+interface Vlan20
+   ip address 192.168.20.41/24
+!
+ip routing
 ```
 
 
