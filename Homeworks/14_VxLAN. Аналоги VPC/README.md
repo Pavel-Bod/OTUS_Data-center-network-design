@@ -341,27 +341,350 @@ ip routing
 - Leaf-11
 
 ```
+Leaf-11#sh mlag
+MLAG Configuration:
+domain-id                          :               leafs
+local-interface                    :            Vlan4090
+peer-address                       :         10.42.205.1
+peer-link                          :     Port-Channel999
+hb-peer-address                    :         10.42.206.2
+hb-peer-vrf                        :                mgmt
+peer-config                        :          consistent
 
+MLAG Status:
+state                              :              Active
+negotiation status                 :           Connected
+peer-link status                   :                  Up
+local-int status                   :                  Up
+system-id                          :   52:00:00:45:ab:df
+dual-primary detection             :          Configured
+dual-primary interface errdisabled :               False
+
+MLAG Ports:
+Disabled                           :                   0
+Configured                         :                   0
+Inactive                           :                   0
+Active-partial                     :                   0
+Active-full                        :                   1
+
+Leaf-11#sh mlag interfaces detail
+                                        local/remote
+ mlag         state   local   remote    oper    config    last change   changes
+------ ------------- ------- -------- ------- ---------- -------------- -------
+    1   active-full     Po1      Po1   up/up   ena/ena    1:57:43 ago         3
+
+Leaf-11#sh port-channel 1 detailed
+Port Channel Port-Channel1 (Fallback State: Unconfigured):
+Minimum links: unconfigured
+Minimum speed: unconfigured
+Current weight/Max weight: 1/16
+  Active Ports:
+      Port               Time Became Active      Protocol      Mode      Weight
+    ------------------ ----------------------- ------------- ----------- ------
+      Ethernet5          8:12:42                 LACP          Active      1
+      PeerEthernet5      Thu 22:52:07            LACP          Active      0
+
+Leaf-11#sh bgp evpn
+BGP routing table information for VRF default
+Router identifier 10.42.201.11, local AS number 65501
+Route status codes: * - valid, > - active, S - Stale, E - ECMP head, e - ECMP
+                    c - Contributing to ECMP, % - Pending BGP convergence
+Origin codes: i - IGP, e - EGP, ? - incomplete
+AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Link Local Nexthop
+
+          Network                Next Hop              Metric  LocPref Weight  Path
+ * >      RD: 65501:100010 imet 10.42.204.1
+                                 -                     -       -       0       i
+ * >      RD: 65501:100020 imet 10.42.204.1
+                                 -                     -       -       0       i
+ * >Ec    RD: 65502:100010 imet 10.42.204.2
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:100010 imet 10.42.204.2
+                                 10.42.204.2           -       100     0       65500 65502 i
+ * >Ec    RD: 65502:100020 imet 10.42.204.2
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:100020 imet 10.42.204.2
+                                 10.42.204.2           -       100     0       65500 65502 i
+ * >Ec    RD: 65503:100010 imet 10.42.204.3
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:100010 imet 10.42.204.3
+                                 10.42.204.3           -       100     0       65500 65503 i
+ * >Ec    RD: 65503:100020 imet 10.42.204.3
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:100020 imet 10.42.204.3
+                                 10.42.204.3           -       100     0       65500 65503 i
+ * >      RD: 65501:9999 ip-prefix 192.168.10.0/24
+                                 -                     -       -       0       i
+ * >Ec    RD: 65502:9999 ip-prefix 192.168.10.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:9999 ip-prefix 192.168.10.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ * >Ec    RD: 65503:9999 ip-prefix 192.168.10.0/24
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:9999 ip-prefix 192.168.10.0/24
+                                 10.42.204.3           -       100     0       65500 65503 i
+ * >      RD: 65501:9999 ip-prefix 192.168.20.0/24
+                                 -                     -       -       0       i
+ * >Ec    RD: 65502:9999 ip-prefix 192.168.20.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:9999 ip-prefix 192.168.20.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ * >Ec    RD: 65503:9999 ip-prefix 192.168.20.0/24
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:9999 ip-prefix 192.168.20.0/24
+                                 10.42.204.3           -       100     0       65500 65503 i
+
+Leaf-11#sh ip route
+
+VRF: default
+
+ B E      10.42.200.1/32 [20/0] via 10.42.202.0, Ethernet1
+ B E      10.42.200.2/32 [20/0] via 10.42.203.0, Ethernet2
+ B E      10.42.201.2/32 [20/0] via 10.42.202.0, Ethernet1
+                                via 10.42.203.0, Ethernet2
+ B E      10.42.201.3/32 [20/0] via 10.42.202.0, Ethernet1
+                                via 10.42.203.0, Ethernet2
+ C        10.42.201.11/32 is directly connected, Loopback2
+ B I      10.42.201.12/32 [200/0] via 10.42.207.1, Vlan4091
+ C        10.42.202.0/31 is directly connected, Ethernet1
+ C        10.42.203.0/31 is directly connected, Ethernet2
+ C        10.42.204.1/32 is directly connected, Loopback100
+ B E      10.42.204.2/32 [20/0] via 10.42.202.0, Ethernet1
+                                via 10.42.203.0, Ethernet2
+ B E      10.42.204.3/32 [20/0] via 10.42.202.0, Ethernet1
+                                via 10.42.203.0, Ethernet2
+ C        10.42.205.0/31 is directly connected, Vlan4090
+ C        10.42.207.0/31 is directly connected, Vlan4091
+
+Leaf-11#sh ip route vrf EVPN
+
+VRF: EVPN
+
+ B E      192.168.10.31/32 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ C        192.168.10.0/24 is directly connected, Vlan10
+ B E      192.168.20.31/32 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ C        192.168.20.0/24 is directly connected, Vlan20
+
+
+Leaf-11#sh vxlan vni
+VNI to VLAN Mapping for Vxlan1
+VNI          VLAN       Source       Interface           802.1Q Tag
+------------ ---------- ------------ ------------------- ----------
+100010       10         static       Ethernet5           untagged
+                                     Ethernet8           untagged
+                                     Port-Channel1       10
+                                     Vxlan1              10
+100020       20         static       Ethernet7           untagged
+                                     Port-Channel1       20
+                                     Vxlan1              20
+
+VNI to dynamic VLAN Mapping for Vxlan1
+VNI        VLAN       VRF        Source
+---------- ---------- ---------- ------------
+9999       4094       EVPN       evpn
 ```
 
 - Leaf-12
 
 ```
+Leaf-12#sh mlag
+MLAG Configuration:
+domain-id                          :               leafs
+local-interface                    :            Vlan4090
+peer-address                       :         10.42.205.0
+peer-link                          :     Port-Channel999
+hb-peer-address                    :         10.42.206.1
+hb-peer-vrf                        :                mgmt
+peer-config                        :          consistent
 
+MLAG Status:
+state                              :              Active
+negotiation status                 :           Connected
+peer-link status                   :                  Up
+local-int status                   :                  Up
+system-id                          :   52:00:00:45:ab:df
+dual-primary detection             :          Configured
+dual-primary interface errdisabled :               False
+
+MLAG Ports:
+Disabled                           :                   0
+Configured                         :                   0
+Inactive                           :                   0
+Active-partial                     :                   0
+Active-full                        :                   1
+
+
+Leaf-12#sh mlag interfaces detail
+                                        local/remote
+ mlag         state   local   remote    oper    config    last change   changes
+------ ------------- ------- -------- ------- ---------- -------------- -------
+    1   active-full     Po1      Po1   up/up   ena/ena    2:09:53 ago        17
+
+
+
+Leaf-12#sh port-channel 1 detailed
+Port Channel Port-Channel1 (Fallback State: Unconfigured):
+Minimum links: unconfigured
+Minimum speed: unconfigured
+Current weight/Max weight: 1/16
+  Active Ports:
+      Port               Time Became Active      Protocol      Mode      Weight
+    ------------------ ----------------------- ------------- ----------- ------
+      Ethernet5          Thu 22:52:07            LACP          Active      1
+      PeerEthernet5      Sun 8:12:42             LACP          Active      0
+
+
+Leaf-12#sh bgp evpn
+BGP routing table information for VRF default
+Router identifier 10.42.201.12, local AS number 65501
+Route status codes: * - valid, > - active, S - Stale, E - ECMP head, e - ECMP
+                    c - Contributing to ECMP, % - Pending BGP convergence
+Origin codes: i - IGP, e - EGP, ? - incomplete
+AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Link Local Nexthop
+
+          Network                Next Hop              Metric  LocPref Weight  Path
+ * >      RD: 65501:100010 imet 10.42.204.1
+                                 -                     -       -       0       i
+ * >      RD: 65501:100020 imet 10.42.204.1
+                                 -                     -       -       0       i
+ * >Ec    RD: 65502:100010 imet 10.42.204.2
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:100010 imet 10.42.204.2
+                                 10.42.204.2           -       100     0       65500 65502 i
+ * >Ec    RD: 65502:100020 imet 10.42.204.2
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:100020 imet 10.42.204.2
+                                 10.42.204.2           -       100     0       65500 65502 i
+ * >Ec    RD: 65503:100010 imet 10.42.204.3
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:100010 imet 10.42.204.3
+                                 10.42.204.3           -       100     0       65500 65503 i
+ * >Ec    RD: 65503:100020 imet 10.42.204.3
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:100020 imet 10.42.204.3
+                                 10.42.204.3           -       100     0       65500 65503 i
+ * >      RD: 65501:9999 ip-prefix 192.168.10.0/24
+                                 -                     -       -       0       i
+ * >Ec    RD: 65502:9999 ip-prefix 192.168.10.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:9999 ip-prefix 192.168.10.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ * >Ec    RD: 65503:9999 ip-prefix 192.168.10.0/24
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:9999 ip-prefix 192.168.10.0/24
+                                 10.42.204.3           -       100     0       65500 65503 i
+ * >      RD: 65501:9999 ip-prefix 192.168.20.0/24
+                                 -                     -       -       0       i
+ * >Ec    RD: 65502:9999 ip-prefix 192.168.20.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:9999 ip-prefix 192.168.20.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ * >Ec    RD: 65503:9999 ip-prefix 192.168.20.0/24
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:9999 ip-prefix 192.168.20.0/24
+                                 10.42.204.3           -       100     0       65500 65503 i
+
+
+Leaf-12#sh ip route
+
+VRF: default
+
+ B E      10.42.200.1/32 [20/0] via 10.42.202.6, Ethernet1
+ B E      10.42.200.2/32 [20/0] via 10.42.203.6, Ethernet2
+ B E      10.42.201.2/32 [20/0] via 10.42.202.6, Ethernet1
+                                via 10.42.203.6, Ethernet2
+ B E      10.42.201.3/32 [20/0] via 10.42.202.6, Ethernet1
+                                via 10.42.203.6, Ethernet2
+ B I      10.42.201.11/32 [200/0] via 10.42.207.0, Vlan4091
+ C        10.42.201.12/32 is directly connected, Loopback2
+ C        10.42.202.6/31 is directly connected, Ethernet1
+ C        10.42.203.6/31 is directly connected, Ethernet2
+ C        10.42.204.1/32 is directly connected, Loopback100
+ B E      10.42.204.2/32 [20/0] via 10.42.202.6, Ethernet1
+                                via 10.42.203.6, Ethernet2
+ B E      10.42.204.3/32 [20/0] via 10.42.202.6, Ethernet1
+                                via 10.42.203.6, Ethernet2
+ C        10.42.205.0/31 is directly connected, Vlan4090
+ C        10.42.207.0/31 is directly connected, Vlan4091
+
+
+Leaf-12#sh ip route vrf EVPN
+
+VRF: EVPN
+
+ B E      192.168.10.31/32 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ C        192.168.10.0/24 is directly connected, Vlan10
+ B E      192.168.20.31/32 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ C        192.168.20.0/24 is directly connected, Vlan20
+
+Leaf-12#sh vxlan vni
+VNI to VLAN Mapping for Vxlan1
+VNI          VLAN       Source       Interface           802.1Q Tag
+------------ ---------- ------------ ------------------- ----------
+100010       10         static       Ethernet5           untagged
+                                     PeerEthernet8       untagged
+                                     Port-Channel1       10
+                                     Vxlan1              10
+100020       20         static       PeerEthernet7       untagged
+                                     Port-Channel1       20
+                                     Vxlan1              20
+
+VNI to dynamic VLAN Mapping for Vxlan1
+VNI        VLAN       VRF        Source
+---------- ---------- ---------- ------------
+9999       4094       EVPN       evpn
 ```
 
-- Leaf-3
+- Server1
 
 ```
+Server1#sh port-channel 1 detailed
+Port Channel Port-Channel1 (Fallback State: Unconfigured):
+Minimum links: unconfigured
+Minimum speed: unconfigured
+Current weight/Max weight: 2/16
+  Active Ports:
+       Port            Time Became Active       Protocol       Mode      Weight
+    --------------- ------------------------ -------------- ------------ ------
+       Ethernet1       Thu 23:27:46             LACP           Active      1
+       Ethernet2       Thu 22:52:08             LACP           Active      1
 
 ```
 
 - VPC5
 ```
+VPC5> ping 192.168.10.41
 
+192.168.10.41 icmp_seq=1 timeout
+84 bytes from 192.168.10.41 icmp_seq=2 ttl=64 time=21.647 ms
+84 bytes from 192.168.10.41 icmp_seq=3 ttl=64 time=22.856 ms
+84 bytes from 192.168.10.41 icmp_seq=4 ttl=64 time=19.928 ms
+84 bytes from 192.168.10.41 icmp_seq=5 ttl=64 time=21.570 ms
+
+VPC5> ping 192.168.20.41
+
+84 bytes from 192.168.20.41 icmp_seq=1 ttl=64 time=331.817 ms
+84 bytes from 192.168.20.41 icmp_seq=2 ttl=64 time=62.051 ms
+84 bytes from 192.168.20.41 icmp_seq=3 ttl=64 time=42.094 ms
+84 bytes from 192.168.20.41 icmp_seq=4 ttl=64 time=31.319 ms
+84 bytes from 192.168.20.41 icmp_seq=5 ttl=64 time=75.497 ms
 ```
 
 - VPC6
 ```
+VPC6> ping 192.168.10.41
 
+84 bytes from 192.168.10.41 icmp_seq=1 ttl=64 time=126.022 ms
+84 bytes from 192.168.10.41 icmp_seq=2 ttl=64 time=95.138 ms
+84 bytes from 192.168.10.41 icmp_seq=3 ttl=64 time=27.137 ms
+84 bytes from 192.168.10.41 icmp_seq=4 ttl=64 time=23.694 ms
+84 bytes from 192.168.10.41 icmp_seq=5 ttl=64 time=44.373 ms
+
+VPC6> ping 192.168.20.41
+
+84 bytes from 192.168.20.41 icmp_seq=1 ttl=64 time=147.448 ms
+84 bytes from 192.168.20.41 icmp_seq=2 ttl=64 time=71.050 ms
+84 bytes from 192.168.20.41 icmp_seq=3 ttl=64 time=49.055 ms
+84 bytes from 192.168.20.41 icmp_seq=4 ttl=64 time=28.704 ms
+84 bytes from 192.168.20.41 icmp_seq=5 ttl=64 time=33.087 ms
 ```
