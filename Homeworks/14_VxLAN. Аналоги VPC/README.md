@@ -688,3 +688,205 @@ VPC6> ping 192.168.20.41
 84 bytes from 192.168.20.41 icmp_seq=4 ttl=64 time=28.704 ms
 84 bytes from 192.168.20.41 icmp_seq=5 ttl=64 time=33.087 ms
 ```
+
+#### Проверка связности при отключении одного линка к серверу
+
+- Leaf-11
+
+```
+Leaf-11#conf t
+Leaf-11(config)#int eth5
+Leaf-11(config-if-Et5)#shut
+
+Leaf-11#sh port-ch 1 detailed
+Port Channel Port-Channel1 (Fallback State: Unconfigured):
+Minimum links: unconfigured
+Minimum speed: unconfigured
+Current weight/Max weight: 0/16
+  Active Ports:
+      Port               Time Became Active      Protocol      Mode      Weight
+    ------------------ ----------------------- ------------- ----------- ------
+      PeerEthernet5      Thu 22:52:07            LACP          Active      0
+
+  Configured, but inactive ports:
+       Port            Time Became Inactive    Reason
+    --------------- -------------------------- -----------------------------
+       Ethernet5       10:42:51                link down in LACP negotiation
+
+Leaf-11#sh mac address-table | in  5000.002f.d8fe
+  10    5000.002f.d8fe    DYNAMIC     Po999      1       0:00:33 ago
+  20    5000.002f.d8fe    DYNAMIC     Po999      1       0:05:39 ago
+```
+
+- Leaf-12
+
+```
+Leaf-12#sh port-channel 1 detailed
+Port Channel Port-Channel1 (Fallback State: Unconfigured):
+Minimum links: unconfigured
+Minimum speed: unconfigured
+Current weight/Max weight: 1/16
+  Active Ports:
+       Port            Time Became Active       Protocol       Mode      Weight
+    --------------- ------------------------ -------------- ------------ ------
+       Ethernet5       Thu 22:52:07             LACP           Active      1
+
+  Configured, but inactive ports:
+      Port                Time Became Inactive    Reason
+    ------------------ -------------------------- -----------------------------
+      PeerEthernet5       Sun 10:42:51            link down in LACP negotiation
+
+Leaf-12#sh mac address-table| in  5000.002f.d8fe
+  10    5000.002f.d8fe    DYNAMIC     Po1        1       0:00:05 ago
+  20    5000.002f.d8fe    DYNAMIC     Po1        1       0:05:10 ago
+```
+
+- Server1
+
+```
+Server1#sh port-channel 1 detailed
+Port Channel Port-Channel1 (Fallback State: Unconfigured):
+Minimum links: unconfigured
+Minimum speed: unconfigured
+Current weight/Max weight: 1/16
+  Active Ports:
+       Port            Time Became Active       Protocol       Mode      Weight
+    --------------- ------------------------ -------------- ------------ ------
+       Ethernet2       Thu 22:52:08             LACP           Active      1
+
+  Configured, but inactive ports:
+       Port            Time Became Inactive    Reason
+    --------------- -------------------------- -----------------------------
+       Ethernet1       1:57:55                 link down in LACP negotiation
+
+Server1#sh interfaces vlan10
+Vlan10 is up, line protocol is up (connected)
+  Hardware is Vlan, address is 5000.002f.d8fe (bia 5000.002f.d8fe)
+  Internet address is 192.168.10.41/24
+
+Server1#sh interfaces vlan20
+Vlan20 is up, line protocol is up (connected)
+  Hardware is Vlan, address is 5000.002f.d8fe (bia 5000.002f.d8fe)
+  Internet address is 192.168.20.41/24
+```
+
+- VPC5
+```
+VPC5> ping 192.168.10.41 -c 2
+
+84 bytes from 192.168.10.41 icmp_seq=1 ttl=64 time=386.062 ms
+84 bytes from 192.168.10.41 icmp_seq=2 ttl=64 time=33.291 ms
+
+VPC5> ping 192.168.20.41 -c 2
+
+84 bytes from 192.168.20.41 icmp_seq=1 ttl=64 time=93.594 ms
+84 bytes from 192.168.20.41 icmp_seq=2 ttl=64 time=44.366 ms
+```
+
+- VPC6
+```
+VPC6> ping 192.168.10.41 -c 2
+
+84 bytes from 192.168.10.41 icmp_seq=1 ttl=64 time=55.583 ms
+84 bytes from 192.168.10.41 icmp_seq=2 ttl=64 time=29.942 ms
+
+VPC6> ping 192.168.10.41 -c 2
+
+84 bytes from 192.168.10.41 icmp_seq=1 ttl=64 time=280.710 ms
+84 bytes from 192.168.10.41 icmp_seq=2 ttl=64 time=38.056 ms
+```
+
+#### Проверка связности отключении одного линка к серверу и одного Leaf от всех Spine
+
+- Leaf-11
+
+```
+Leaf-11#sh ip route
+
+VRF: default
+ B E      10.42.200.1/32 [20/0] via 10.42.202.0, Ethernet1
+ B E      10.42.200.2/32 [20/0] via 10.42.203.0, Ethernet2
+ B E      10.42.201.2/32 [20/0] via 10.42.202.0, Ethernet1
+                                via 10.42.203.0, Ethernet2
+ B E      10.42.201.3/32 [20/0] via 10.42.202.0, Ethernet1
+                                via 10.42.203.0, Ethernet2
+ C        10.42.201.11/32 is directly connected, Loopback2
+ B I      10.42.201.12/32 [200/0] via 10.42.207.1, Vlan4091
+ C        10.42.202.0/31 is directly connected, Ethernet1
+ C        10.42.203.0/31 is directly connected, Ethernet2
+ C        10.42.204.1/32 is directly connected, Loopback100
+ B E      10.42.204.2/32 [20/0] via 10.42.202.0, Ethernet1
+                                via 10.42.203.0, Ethernet2
+ B E      10.42.204.3/32 [20/0] via 10.42.202.0, Ethernet1
+                                via 10.42.203.0, Ethernet2
+ C        10.42.205.0/31 is directly connected, Vlan4090
+ C        10.42.207.0/31 is directly connected, Vlan4091
+
+
+Leaf-11#sh ip route vrf EVPN
+
+VRF: EVPN
+ B E      192.168.10.31/32 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ C        192.168.10.0/24 is directly connected, Vlan10
+ B E      192.168.20.31/32 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ C        192.168.20.0/24 is directly connected, Vlan20
+
+```
+
+- Leaf-12
+
+```
+Leaf-12#conf t
+Leaf-12(config)#interface eth1-2
+Leaf-12(config-if-Et1-2)#shut
+
+Leaf-12#sh ip route
+
+VRF: default
+ B I      10.42.200.1/32 [200/0] via 10.42.207.0, Vlan4091
+ B I      10.42.200.2/32 [200/0] via 10.42.207.0, Vlan4091
+ B I      10.42.201.2/32 [200/0] via 10.42.207.0, Vlan4091
+ B I      10.42.201.3/32 [200/0] via 10.42.207.0, Vlan4091
+ B I      10.42.201.11/32 [200/0] via 10.42.207.0, Vlan4091
+ C        10.42.201.12/32 is directly connected, Loopback2
+ C        10.42.204.1/32 is directly connected, Loopback100
+ B I      10.42.204.2/32 [200/0] via 10.42.207.0, Vlan4091
+ B I      10.42.204.3/32 [200/0] via 10.42.207.0, Vlan4091
+ C        10.42.205.0/31 is directly connected, Vlan4090
+ C        10.42.207.0/31 is directly connected, Vlan4091
+
+Leaf-12#
+Leaf-12#sh ip route vrf EVPN
+
+VRF: EVPN
+ B E      192.168.10.31/32 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ C        192.168.10.0/24 is directly connected, Vlan10
+ B E      192.168.20.31/32 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ C        192.168.20.0/24 is directly connected, Vlan20
+```
+
+- VPC5
+```
+VPC5> ping 192.168.10.41 -c 2
+
+84 bytes from 192.168.10.41 icmp_seq=1 ttl=64 time=366.017 ms
+84 bytes from 192.168.10.41 icmp_seq=2 ttl=64 time=32.368 ms
+
+VPC5> ping 192.168.20.41 -c 2
+
+84 bytes from 192.168.20.41 icmp_seq=1 ttl=64 time=50.585 ms
+84 bytes from 192.168.20.41 icmp_seq=2 ttl=64 time=78.115 ms
+```
+
+- VPC6
+```
+VPC6> ping 192.168.10.41 -c 2
+
+84 bytes from 192.168.10.41 icmp_seq=1 ttl=64 time=84.516 ms
+84 bytes from 192.168.10.41 icmp_seq=2 ttl=64 time=42.572 ms
+
+VPC6> ping 192.168.20.41 -c 2
+
+84 bytes from 192.168.20.41 icmp_seq=1 ttl=64 time=45.714 ms
+84 bytes from 192.168.20.41 icmp_seq=2 ttl=64 time=46.311 ms
+```
