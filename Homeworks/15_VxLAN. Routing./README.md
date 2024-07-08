@@ -2,6 +2,7 @@
 ## VXLAN. Routing
 ### Цель:
 - Реализовать передачу суммарных префиксов через EVPN route-type 5
+- Настроить маршрутизацию между сетями в разных vrf через внешний маршрутизатор
 ### Выполнение:
 #### Собранная схема сети
 ![](images/sh.png)
@@ -98,7 +99,7 @@ router bgp 65501
 ```
 vlan 30,40
 !
-vrf instance EVPN
+vrf instance EVPN-2
 !
 interface Ethernet1
    no switchport
@@ -121,23 +122,23 @@ interface Loopback100
    ip address 10.42.204.2/32
 !
 interface Vlan30
-   vrf EVPN
+   vrf EVPN-2
    ip address virtual 192.168.30.1/24
 !
 interface Vlan40
-   vrf EVPN
+   vrf EVPN-2
    ip address virtual 192.168.40.1/24
 !
 interface Vxlan1
    vxlan source-interface Loopback100
    vxlan udp-port 4789
-   vxlan vrf EVPN vni 9999
+   vxlan vrf EVPN-2 vni 7777
    vxlan learn-restrict any
 !
 ip virtual-router mac-address 00:bb:bb:bb:bb:bb
 !
 ip routing
-ip routing vrf EVPN
+ip routing vrf EVPN-2
 !
 router bgp 65502
    router-id 10.42.201.2
@@ -171,19 +172,20 @@ router bgp 65502
       network 10.42.201.2/32
       network 10.42.204.2/32
    !
-   vrf EVPN
-      rd 65502:9999
-      route-target import evpn 9999:9999
-      route-target export evpn 9999:9999
+   vrf EVPN-2
+      rd 65502:7777
+      route-target import evpn 7777:7777
+      route-target export evpn 7777:7777
       redistribute connected
 ```
 
 - [Leaf-3](config/Leaf-3.conf)
 
 ```
-vlan 10,50,900
+vlan 10,50,60,900,901
 !
 vrf instance EVPN
+vrf instance EVPN-2
 !
 interface Ethernet1
    no switchport
@@ -193,9 +195,12 @@ interface Ethernet2
    no switchport
    ip address 10.42.203.5/31
 !
+interface Ethernet3
+   switchport mode trunk
+   switchport trunk allowed vlan 900,901
+!
 interface Ethernet7
-   switchport access vlan 900
-   vrf EVPN
+   switchport access vlan 60
 !
 interface Ethernet8
    switchport access vlan 50
@@ -210,20 +215,30 @@ interface Vlan50
    vrf EVPN
    ip address virtual 192.168.50.1/24
 !
+interface Vlan60
+   vrf EVPN-2
+   ip address virtual 192.168.60.1/24
+!
 interface Vlan900
    vrf EVPN
    ip address 172.16.100.2/30
+!
+interface Vlan901
+   vrf EVPN-2
+   ip address 172.16.100.6/30
 !
 interface Vxlan1
    vxlan source-interface Loopback100
    vxlan udp-port 4789
    vxlan vrf EVPN vni 9999
+   vxlan vrf EVPN-2 vni 7777
    vxlan learn-restrict any
 !
 ip virtual-router mac-address 00:cc:cc:cc:cc:cc
 !
 ip routing
 ip routing vrf EVPN
+ip routing vrf EVPN-2
 !
 router bgp 65503
    router-id 10.42.201.3
@@ -266,14 +281,26 @@ router bgp 65503
       !
       address-family ipv4
          neighbor 172.16.100.1 activate
+   !
+   vrf EVPN-2
+      rd 65503:7777
+      route-target import evpn 7777:7777
+      route-target export evpn 7777:7777
+      neighbor 172.16.100.5 remote-as 65999
+      redistribute connected
+      !
+      address-family ipv4
+         neighbor 172.16.100.5 activate
 ```
 
 - [Router](config/Router.conf)
 
 ```
+vlan 900-901
+!
 interface Ethernet1
-   no switchport
-   ip address 172.16.100.1/30
+   switchport trunk allowed vlan 900-901
+   switchport mode trunk
 !
 interface Loopback0
    ip address 10.42.201.255/32
@@ -284,6 +311,12 @@ interface Loopback1
 interface Loopback2
    ip address 7.7.7.7/32
 !
+interface Vlan900
+   ip address 172.16.100.1/30
+!
+interface Vlan901
+   ip address 172.16.100.5/30
+!
 ip routing
 !
 ip route 0.0.0.0/0 Null0
@@ -292,11 +325,13 @@ router bgp 65999
    router-id 10.42.201.255
    timers bgp 3 9
    neighbor 172.16.100.2 remote-as 65503
+   neighbor 172.16.100.6 remote-as 65503
    redistribute connected
    redistribute static
    !
    address-family ipv4
       neighbor 172.16.100.2 activate
+      neighbor 172.16.100.6 activate
       redistribute static
 ```
 
