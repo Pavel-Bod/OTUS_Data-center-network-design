@@ -307,22 +307,223 @@ router bgp 65999
 - Leaf-1
 
 ```
+Leaf-1#sh ip route vrf EVPN
+VRF: EVPN
+ B E      0.0.0.0/0 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+
+ B E      7.7.7.7/32 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ B E      8.8.8.8/32 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ B E      10.42.201.255/32 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ B E      172.16.100.0/30 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ C        192.168.10.0/24 is directly connected, Vlan10
+ C        192.168.20.0/24 is directly connected, Vlan20
+ B E      192.168.30.0/24 [20/0] via VTEP 10.42.204.2 VNI 9999 router-mac 50:00:00:cb:38:c2 local-interface Vxlan1
+ B E      192.168.40.0/24 [20/0] via VTEP 10.42.204.2 VNI 9999 router-mac 50:00:00:cb:38:c2 local-interface Vxlan1
+ B E      192.168.50.0/24 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+
+Leaf-1#sh bgp evpn route-type ip-prefix ipv4
+BGP routing table information for VRF default
+Router identifier 10.42.201.1, local AS number 65501
+Route status codes: * - valid, > - active, S - Stale, E - ECMP head, e - ECMP
+                    c - Contributing to ECMP, % - Pending BGP convergence
+Origin codes: i - IGP, e - EGP, ? - incomplete
+AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Link Local Nexthop
+
+          Network                Next Hop              Metric  LocPref Weight  Path
+ * >Ec    RD: 65503:9999 ip-prefix 0.0.0.0/0
+                                 10.42.204.3           -       100     0       65500 65503 65999 ?
+ *  ec    RD: 65503:9999 ip-prefix 0.0.0.0/0
+                                 10.42.204.3           -       100     0       65500 65503 65999 ?
+ * >Ec    RD: 65503:9999 ip-prefix 7.7.7.7/32
+                                 10.42.204.3           -       100     0       65500 65503 65999 i
+ *  ec    RD: 65503:9999 ip-prefix 7.7.7.7/32
+                                 10.42.204.3           -       100     0       65500 65503 65999 i
+ * >Ec    RD: 65503:9999 ip-prefix 8.8.8.8/32
+                                 10.42.204.3           -       100     0       65500 65503 65999 i
+ *  ec    RD: 65503:9999 ip-prefix 8.8.8.8/32
+                                 10.42.204.3           -       100     0       65500 65503 65999 i
+ * >Ec    RD: 65503:9999 ip-prefix 10.42.201.255/32
+                                 10.42.204.3           -       100     0       65500 65503 65999 i
+ *  ec    RD: 65503:9999 ip-prefix 10.42.201.255/32
+                                 10.42.204.3           -       100     0       65500 65503 65999 i
+ * >Ec    RD: 65503:9999 ip-prefix 172.16.100.0/30
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:9999 ip-prefix 172.16.100.0/30
+                                 10.42.204.3           -       100     0       65500 65503 i
+ * >      RD: 65501:9999 ip-prefix 192.168.10.0/24
+                                 -                     -       -       0       i
+ * >      RD: 65501:9999 ip-prefix 192.168.20.0/24
+                                 -                     -       -       0       i
+ * >Ec    RD: 65502:9999 ip-prefix 192.168.30.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:9999 ip-prefix 192.168.30.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ * >Ec    RD: 65502:9999 ip-prefix 192.168.40.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:9999 ip-prefix 192.168.40.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ * >Ec    RD: 65503:9999 ip-prefix 192.168.50.0/24
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:9999 ip-prefix 192.168.50.0/24
+                                 10.42.204.3           -       100     0       65500 65503 i
+
 
 ```
 
 - Leaf-2
 
 ```
+Leaf-2#sh ip route vrf EVPN
+VRF: EVPN
+ B E      0.0.0.0/0 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+
+ B E      7.7.7.7/32 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ B E      8.8.8.8/32 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ B E      10.42.201.255/32 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ B E      172.16.100.0/30 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+ B E      192.168.10.0/24 [20/0] via VTEP 10.42.204.1 VNI 9999 router-mac 50:00:00:d7:ee:0b local-interface Vxlan1
+ B E      192.168.20.0/24 [20/0] via VTEP 10.42.204.1 VNI 9999 router-mac 50:00:00:d7:ee:0b local-interface Vxlan1
+ C        192.168.30.0/24 is directly connected, Vlan30
+ C        192.168.40.0/24 is directly connected, Vlan40
+ B E      192.168.50.0/24 [20/0] via VTEP 10.42.204.3 VNI 9999 router-mac 50:00:00:d5:5d:c0 local-interface Vxlan1
+
+Leaf-2#sh bgp evpn route-type ip-prefix ipv4
+BGP routing table information for VRF default
+Router identifier 10.42.201.2, local AS number 65502
+Route status codes: * - valid, > - active, S - Stale, E - ECMP head, e - ECMP
+                    c - Contributing to ECMP, % - Pending BGP convergence
+Origin codes: i - IGP, e - EGP, ? - incomplete
+AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Link Local Nexthop
+
+          Network                Next Hop              Metric  LocPref Weight  Path
+ * >Ec    RD: 65503:9999 ip-prefix 0.0.0.0/0
+                                 10.42.204.3           -       100     0       65500 65503 65999 ?
+ *  ec    RD: 65503:9999 ip-prefix 0.0.0.0/0
+                                 10.42.204.3           -       100     0       65500 65503 65999 ?
+ * >Ec    RD: 65503:9999 ip-prefix 7.7.7.7/32
+                                 10.42.204.3           -       100     0       65500 65503 65999 i
+ *  ec    RD: 65503:9999 ip-prefix 7.7.7.7/32
+                                 10.42.204.3           -       100     0       65500 65503 65999 i
+ * >Ec    RD: 65503:9999 ip-prefix 8.8.8.8/32
+                                 10.42.204.3           -       100     0       65500 65503 65999 i
+ *  ec    RD: 65503:9999 ip-prefix 8.8.8.8/32
+                                 10.42.204.3           -       100     0       65500 65503 65999 i
+ * >Ec    RD: 65503:9999 ip-prefix 10.42.201.255/32
+                                 10.42.204.3           -       100     0       65500 65503 65999 i
+ *  ec    RD: 65503:9999 ip-prefix 10.42.201.255/32
+                                 10.42.204.3           -       100     0       65500 65503 65999 i
+ * >Ec    RD: 65503:9999 ip-prefix 172.16.100.0/30
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:9999 ip-prefix 172.16.100.0/30
+                                 10.42.204.3           -       100     0       65500 65503 i
+ * >Ec    RD: 65501:9999 ip-prefix 192.168.10.0/24
+                                 10.42.204.1           -       100     0       65500 65501 i
+ *  ec    RD: 65501:9999 ip-prefix 192.168.10.0/24
+                                 10.42.204.1           -       100     0       65500 65501 i
+ * >Ec    RD: 65501:9999 ip-prefix 192.168.20.0/24
+                                 10.42.204.1           -       100     0       65500 65501 i
+ *  ec    RD: 65501:9999 ip-prefix 192.168.20.0/24
+                                 10.42.204.1           -       100     0       65500 65501 i
+ * >      RD: 65502:9999 ip-prefix 192.168.30.0/24
+                                 -                     -       -       0       i
+ * >      RD: 65502:9999 ip-prefix 192.168.40.0/24
+                                 -                     -       -       0       i
+ * >Ec    RD: 65503:9999 ip-prefix 192.168.50.0/24
+                                 10.42.204.3           -       100     0       65500 65503 i
+ *  ec    RD: 65503:9999 ip-prefix 192.168.50.0/24
+                                 10.42.204.3           -       100     0       65500 65503 i
 
 ```
 
 - Leaf-3
 
 ```
+Leaf-3#sh ip route vrf EVPN
+VRF: EVPN
+Gateway of last resort:
+ B E      0.0.0.0/0 [20/0] via 172.16.100.1, Vlan900
+
+ B E      7.7.7.7/32 [20/0] via 172.16.100.1, Vlan900
+ B E      8.8.8.8/32 [20/0] via 172.16.100.1, Vlan900
+ B E      10.42.201.255/32 [20/0] via 172.16.100.1, Vlan900
+ C        172.16.100.0/30 is directly connected, Vlan900
+ B E      192.168.10.0/24 [20/0] via VTEP 10.42.204.1 VNI 9999 router-mac 50:00:00:d7:ee:0b local-interface Vxlan1
+ B E      192.168.20.0/24 [20/0] via VTEP 10.42.204.1 VNI 9999 router-mac 50:00:00:d7:ee:0b local-interface Vxlan1
+ B E      192.168.30.0/24 [20/0] via VTEP 10.42.204.2 VNI 9999 router-mac 50:00:00:cb:38:c2 local-interface Vxlan1
+ B E      192.168.40.0/24 [20/0] via VTEP 10.42.204.2 VNI 9999 router-mac 50:00:00:cb:38:c2 local-interface Vxlan1
+ C        192.168.50.0/24 is directly connected, Vlan50
+
+Leaf-3#sh bgp evpn route-type ip-prefix ipv4
+BGP routing table information for VRF default
+Router identifier 10.42.201.3, local AS number 65503
+Route status codes: * - valid, > - active, S - Stale, E - ECMP head, e - ECMP
+                    c - Contributing to ECMP, % - Pending BGP convergence
+Origin codes: i - IGP, e - EGP, ? - incomplete
+AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Link Local Nexthop
+
+          Network                Next Hop              Metric  LocPref Weight  Path
+ * >      RD: 65503:9999 ip-prefix 0.0.0.0/0
+                                 -                     -       100     0       65999 ?
+ * >      RD: 65503:9999 ip-prefix 7.7.7.7/32
+                                 -                     -       100     0       65999 i
+ * >      RD: 65503:9999 ip-prefix 8.8.8.8/32
+                                 -                     -       100     0       65999 i
+ * >      RD: 65503:9999 ip-prefix 10.42.201.255/32
+                                 -                     -       100     0       65999 i
+ * >      RD: 65503:9999 ip-prefix 172.16.100.0/30
+                                 -                     -       -       0       i
+ *        RD: 65503:9999 ip-prefix 172.16.100.0/30
+                                 -                     -       100     0       65999 i
+ * >Ec    RD: 65501:9999 ip-prefix 192.168.10.0/24
+                                 10.42.204.1           -       100     0       65500 65501 i
+ *  ec    RD: 65501:9999 ip-prefix 192.168.10.0/24
+                                 10.42.204.1           -       100     0       65500 65501 i
+ * >Ec    RD: 65501:9999 ip-prefix 192.168.20.0/24
+                                 10.42.204.1           -       100     0       65500 65501 i
+ *  ec    RD: 65501:9999 ip-prefix 192.168.20.0/24
+                                 10.42.204.1           -       100     0       65500 65501 i
+ * >Ec    RD: 65502:9999 ip-prefix 192.168.30.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:9999 ip-prefix 192.168.30.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ * >Ec    RD: 65502:9999 ip-prefix 192.168.40.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ *  ec    RD: 65502:9999 ip-prefix 192.168.40.0/24
+                                 10.42.204.2           -       100     0       65500 65502 i
+ * >      RD: 65503:9999 ip-prefix 192.168.50.0/24
+                                 -                     -       -       0       i
 
 ```
 
 - VPC1
 ```
+VPC1> ping 192.168.20.11 -c 2
 
+84 bytes from 192.168.20.11 icmp_seq=1 ttl=63 time=280.356 ms
+84 bytes from 192.168.20.11 icmp_seq=2 ttl=63 time=6.063 ms
+
+VPC1> ping 192.168.30.11 -c 2
+
+84 bytes from 192.168.30.11 icmp_seq=1 ttl=62 time=237.818 ms
+84 bytes from 192.168.30.11 icmp_seq=2 ttl=62 time=16.155 ms
+
+VPC1> ping 192.168.40.11 -c 2
+
+84 bytes from 192.168.40.11 icmp_seq=1 ttl=62 time=94.062 ms
+84 bytes from 192.168.40.11 icmp_seq=2 ttl=62 time=14.545 ms
+
+VPC1> ping 192.168.50.11 -c 2
+
+84 bytes from 192.168.50.11 icmp_seq=1 ttl=62 time=317.639 ms
+84 bytes from 192.168.50.11 icmp_seq=2 ttl=62 time=18.003 ms
+
+VPC1> ping 8.8.8.8 -c 2
+
+84 bytes from 8.8.8.8 icmp_seq=1 ttl=62 time=35.759 ms
+84 bytes from 8.8.8.8 icmp_seq=2 ttl=62 time=23.368 ms
+
+VPC1> ping 7.7.7.7 -c 2
+
+84 bytes from 7.7.7.7 icmp_seq=1 ttl=62 time=19.302 ms
+84 bytes from 7.7.7.7 icmp_seq=2 ttl=62 time=19.269 ms
 ```
